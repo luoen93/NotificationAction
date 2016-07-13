@@ -21,6 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btn1"
+        android:onClick="notificationMethod"
         android:text="清除通知" />
 
     <TextView
