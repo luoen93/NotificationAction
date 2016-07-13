@@ -68,12 +68,12 @@ public class MainActivity extends AppCompatActivity {
                 Intent buttonIntent = new Intent(ACTION_BUTTON);
                 buttonIntent.putExtra(INTENT_BUTTONID_TAG, BUTTON_PREV_ID);
                 //这里加了广播，所及INTENT的必须用getBroadcast方法
-                PendingIntent intent_prev = PendingIntent.getBroadcast(this, 1, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent intent_prev = PendingIntent.getBroadcast(this, 0, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 rv_big.setOnClickPendingIntent(R.id.bo_button, intent_prev);
 
-                Intent intent = new Intent(Intent.ACTION_MAIN);
-                PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, 0);
-                myNotify.contentIntent = contentIntent;
+//                Intent intent = new Intent(Intent.ACTION_MAIN);
+//                PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+//                myNotify.contentIntent = contentIntent;
 
                 manager.notify(NOTIFICATION_FLAG, myNotify);
 
@@ -88,31 +88,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    public class ButtonBroadcastReceiver extends BroadcastReceiver {
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            // TODO Auto-generated method stub
-//            String action = intent.getAction();
-//            if (action.equals(ACTION_BUTTON)) {
-//                //通过传递过来的ID判断按钮点击属性或者通过getResultCode()获得相应点击事件
-//                int buttonId = intent.getIntExtra(INTENT_BUTTONID_TAG, 0);
-//                switch (buttonId) {
-//                    case BUTTON_PREV_ID:
-//                        Log.d(TAG, "上一首01");
-//                        mTextView.setVisibility(View.VISIBLE);
-//                        break;
-//                    case BUTTON_PALY_ID:
-//                        Log.d(TAG, "play");
-//                        break;
-//                    case BUTTON_NEXT_ID:
-//                        Log.d(TAG, "next song");
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//
-//        }
-//    }
+    public class ButtonBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            String action = intent.getAction();
+            if (action.equals(ACTION_BUTTON)) {
+                //通过传递过来的ID判断按钮点击属性或者通过getResultCode()获得相应点击事件
+                int buttonId = intent.getIntExtra(INTENT_BUTTONID_TAG, 0);
+                switch (buttonId) {
+                    case BUTTON_PREV_ID:
+                        Log.d(TAG, "上一首01");
+                        mTextView.setVisibility(View.VISIBLE);
+                        break;
+                    case BUTTON_PALY_ID:
+                        Log.d(TAG, "play");
+                        break;
+                    case BUTTON_NEXT_ID:
+                        Log.d(TAG, "next song");
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+        }
+    }
 }
