@@ -19,24 +19,14 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
 
     public final static String ACTION_BUTTON = "ButtonClick";
-
+    public ButtonBroadcastReceiver bReceiver;
     //消息的标识
     private TextView mTextView;
     private static final int NOTIFICATION_FLAG = 1;
-    final String SHOW_ACTION = "show";
-    String TAG = "now";
-    /**
-     * 上一首 按钮点击 ID
-     */
-    public final static int BUTTON_PREV_ID = 1;
     /**
      * 播放/暂停 按钮点击 ID
      */
     public final static int BUTTON_PALY_ID = 2;
-    /**
-     * 下一首 按钮点击 ID
-     */
-    public final static int BUTTON_NEXT_ID = 3;
 
     public final static String INTENT_BUTTONID_TAG = "ButtonId";
 
@@ -45,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTextView = (TextView) findViewById(R.id.no_text);
+        initButtonReceiver();
     }
 
     public void notificationMethod(View view) {
@@ -66,17 +57,15 @@ public class MainActivity extends AppCompatActivity {
                 myNotify.bigContentView = rv_big;
 
                 Intent buttonIntent = new Intent(ACTION_BUTTON);
-                buttonIntent.putExtra(INTENT_BUTTONID_TAG, BUTTON_PREV_ID);
+                buttonIntent.putExtra(INTENT_BUTTONID_TAG, BUTTON_PALY_ID);
                 //这里加了广播，所及INTENT的必须用getBroadcast方法
-                PendingIntent intent_prev = PendingIntent.getBroadcast(this, 0, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent intent_prev = PendingIntent.getBroadcast(this, 2, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                 rv_big.setOnClickPendingIntent(R.id.bo_button, intent_prev);
 
-//                Intent intent = new Intent(Intent.ACTION_MAIN);
-//                PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
-//                myNotify.contentIntent = contentIntent;
+                PendingIntent contentIntent_main = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class), 0);
+                myNotify.contentIntent = contentIntent_main;
 
                 manager.notify(NOTIFICATION_FLAG, myNotify);
-
 
                 break;
             case R.id.btn2:
@@ -92,27 +81,30 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-
             String action = intent.getAction();
             if (action.equals(ACTION_BUTTON)) {
                 //通过传递过来的ID判断按钮点击属性或者通过getResultCode()获得相应点击事件
                 int buttonId = intent.getIntExtra(INTENT_BUTTONID_TAG, 0);
                 switch (buttonId) {
-                    case BUTTON_PREV_ID:
-                        Log.d(TAG, "上一首01");
+
+                    case BUTTON_PALY_ID:
+                        Log.d("========", "play");
                         mTextView.setVisibility(View.VISIBLE);
                         break;
-                    case BUTTON_PALY_ID:
-                        Log.d(TAG, "play");
-                        break;
-                    case BUTTON_NEXT_ID:
-                        Log.d(TAG, "next song");
-                        break;
+
                     default:
                         break;
                 }
             }
 
         }
+    }
+
+    public void initButtonReceiver() {
+        bReceiver = new ButtonBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(ACTION_BUTTON);
+        registerReceiver(bReceiver, intentFilter);
+
     }
 }
