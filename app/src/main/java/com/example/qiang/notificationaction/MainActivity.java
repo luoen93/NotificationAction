@@ -17,11 +17,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-
+    //action的定义
     public final static String ACTION_BUTTON = "ButtonClick";
+    //定义一个广播
     public ButtonBroadcastReceiver bReceiver;
-    //消息的标识
+
     private TextView mTextView;
+    //消息的标识
     private static final int NOTIFICATION_FLAG = 1;
     /**
      * 播放/暂停 按钮点击 ID
@@ -42,7 +44,6 @@ public class MainActivity extends AppCompatActivity {
         // 在Android进行通知处理，首先需要重系统哪里获得通知管理器NotificationManager，它是一个系统Service。
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         switch (view.getId()) {
-            // 默认通知
             case R.id.btn1:
 
                 Notification myNotify = new Notification();
@@ -50,13 +51,16 @@ public class MainActivity extends AppCompatActivity {
                 myNotify.tickerText = "您有新短消息，请注意查收！";
                 myNotify.when = System.currentTimeMillis();
                 myNotify.flags = Notification.FLAG_NO_CLEAR;// 不能够自动清除
+                myNotify.priority = Notification.PRIORITY_MAX;//设置优先级
+                //自定义消息框
                 RemoteViews rv = new RemoteViews(getPackageName(), R.layout.my_notification);
                 RemoteViews rv_big = new RemoteViews(getPackageName(), R.layout.my_big_notification);
-
+                //分别绑定大小消息框
                 myNotify.contentView = rv;
                 myNotify.bigContentView = rv_big;
 
                 Intent buttonIntent = new Intent(ACTION_BUTTON);
+
                 buttonIntent.putExtra(INTENT_BUTTONID_TAG, BUTTON_PALY_ID);
                 //这里加了广播，所及INTENT的必须用getBroadcast方法
                 PendingIntent intent_prev = PendingIntent.getBroadcast(this, 2, buttonIntent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -76,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
 
     public class ButtonBroadcastReceiver extends BroadcastReceiver {
 
